@@ -24,18 +24,16 @@ function _inherits(subClass, superClass) {
 var FixedTable = function (_React$Component) {
   _inherits(FixedTable, _React$Component);
 
-  function FixedTable(props) {
-    _classCallCheck(this, FixedTable);
-    var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
+  function FixedTable(props){}
 
-    _this.state = {
-      data: props.data,
+  FixedTable.prototype.componentWillMount = function componentWillMount() {
+    this.setState({
+      data: this.props.data,
       filteredData: Immutable.List(),
       sortingProp: 'id',
       sortingDirectionAsc: true
-    };
-    return _this;
-  }
+    });
+  };
 
   FixedTable.prototype.componentDidMount = function componentDidMount() {
     var _this2 = this;
@@ -44,10 +42,7 @@ var FixedTable = function (_React$Component) {
 
   FixedTable.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
     this.setState({
-      data: nextProps.data,
-        filteredData: Immutable.List(),
-      sortingProp: 'id',
-      sortingDirectionAsc: true
+      data: nextProps.data
     });
   };
 
@@ -116,48 +111,68 @@ var FixedTable = function (_React$Component) {
     event.preventDefault();
     var value = event.target.value,
         term = new RegExp(value, 'i'),
-        filterId = event.target.name,
-        filteredData =  [],
+        filterId = event.target.id,
+        filteredData = this.state.data,
         list = Immutable.fromJS(this.state.filteredData.length ? this.state.filteredData : this.state.data),
         $filterInput = $(".fixed-table__filterable-header input[type=text]"),
         len = $filterInput.length;
 
-    // onchange has empty field
+    // onchange has EMPTY value
     if(value === ''){
       $filterInput.each(function (index) {
         var val = $(this).val(),
-            id = this.name;
+            id = this.id;
+        // column has EMPTY field
         if (val === '') {
-          console.warn('ignore filter:', this.name);
-          if (index == $filterInput - 1) renderTable();
+          console.warn('ignore filter:', val, list);
+          $r.setState({
+            filteredData: $.extend(true, {}, $r.state.data)
+          });
         } else {
-          //other column have filter values
-          console.warn('use filter: ', id, val, deletekey);
+          // column HAS filter value (recursive)
+          console.warn('use filter: set state', id, val, $r.state.data.length);
           filteredData = list.filter(function (item) {
             var filteredById = item.get(id);
             if (filteredById.toString().search(val) > -1) {
               return filteredById;
             }
           });
+          $r.setState({
+            sortingProp: this.sortingProp,
+            sortingDirectionAsc: this.sortingDirectionAsc,
+            filteredData: $.map(filteredData.toJS(), function(val, i) { return [val]; })
+          });
         }
       });
-    } // onchange has value
+    } // onchange HAS value
     else {
+      console.warn('onchange filter: ', term, filterId, list);
       filteredData = list.filter(function (item) {
         var filteredById = item.get(filterId);
         if (filteredById.toString().search(term) > -1) {
           return filteredById;
         }
       });
+      this.setState({
+        sortingProp: this.sortingProp,
+        sortingDirectionAsc: this.sortingDirectionAsc,
+        filteredData: $.map(filteredData.toJS(), function(val, i) { return [val]; })
+      });
     }
 
-    this.setState({
-      sortingProp: this.sortingProp,
-      sortingDirectionAsc: this.sortingDirectionAsc,
-      filteredData: $.map(filteredData.toJS(), function(val, i) { return [val]; })
-    });
+
   };
 
+  //Set Filter snapshot onBlur
+  FixedTable.prototype.saveOnBlur = function saveOnBlur(event) {
+    event.preventDefault();
+    if(event.target.value === '') {
+      this.setState({
+        filteredData: $.extend(true, {}, this.state.filteredData)
+      });
+      console.warn('saveOnBlur:', this.state.filteredData);
+    }
+  };
 
   // Clear filters
   FixedTable.prototype.clearFilter = function clearFilter(event){
@@ -231,37 +246,39 @@ var FixedTable = function (_React$Component) {
           type: 'text',
           className: 'fixed-table__fh',
           placeholder: 'Id',
-          name: 'id',
+          id: 'id',
           onChange: this.filterBy.bind(this)
         }), React.createElement('input', {
           type: 'text',
           className: 'fixed-table__fh',
           placeholder: 'First Name',
-          name: 'first_name',
-          onChange: this.filterBy.bind(this)
+          id: 'first_name',
+          onChange: this.filterBy.bind(this),
+          onBlur: this.saveOnBlur.bind(this)
         }), React.createElement('input', {
           type: 'text',
           className: 'fixed-table__th',
           placeholder: 'Last Name',
-          name: 'last_name',
+          id: 'last_name',
           onChange: this.filterBy.bind(this)
         }), React.createElement('input', {
           type: 'text',
           className: 'fixed-table__fh',
           placeholder: 'Email',
-          name: 'email',
+          id: 'email',
           onChange: this.filterBy.bind(this)
         }), React.createElement('input', {
           type: 'text',
           className: 'fixed-table__fh',
           placeholder: 'Country',
-          name: 'country',
-          onChange: this.filterBy.bind(this)
+          id: 'country',
+          onChange: this.filterBy.bind(this),
+          onBlur: this.saveOnBlur.bind(this)
         }), React.createElement('input', {
           type: 'text',
           className: 'fixed-table__fh',
           placeholder: 'IP Address',
-          name: 'ip_address',
+          id: 'ip_address',
           onChange: this.filterBy.bind(this)
         }),
         React.createElement('input', {
@@ -284,7 +301,6 @@ FixedTable.propTypes = {
 
 // get JSON array from file/endpoint
 function renderTable(){
-  console.log('[]')
   $.get('data/data.json', function (data) {
     ReactDOM.render(React.createElement(FixedTable, { data: data, filteredData: Immutable.fromJS(data) }), document.querySelector('#container'));
     //console.log(JSON.stringify(data));
