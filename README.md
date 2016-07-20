@@ -1,17 +1,20 @@
 # ReactDataGrid
 
-## Simple Regex Filter with React.js and Immutable-js
-## Features:
+## Simple Regex Filter and Sort with React.js and Immutable-js
+## Existing Features:
 
 - sortable columns
+- multiple column filter
+- large datasets
+- modular 
+
+## Coming Soon:
 - scrolling table
 - cell format
 - pagination
 - cell inline edit
 - insert & delete row
 - customize column width
-- multiple column filter
-- large columns table
 
 ## Depenancies ##
 ```
