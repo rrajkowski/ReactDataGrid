@@ -1,0 +1,139 @@
+#container {
+  position: relative;
+  margin: 20px auto;
+  width: 50%;
+  height: 80%;
+}
+
+.fixed-table {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.fixed-table__scrollable-sidebar {
+  position: relative;
+  height: 100%;
+  top: 28px;
+  overflow: hidden;
+}
+
+/*.fixed-table__sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 160px;
+  height: 100%;
+}*/
+
+.fixed-table__sidebar .fixed-table__col {
+  width: 100%;
+}
+
+.fixed-table__body {
+  position: relative;
+  margin: 0px;
+  max-width: calc(100% - 80px);
+  height: 100%;
+}
+
+.fixed-table__body .fixed-table__list {
+  top: 65px;
+}
+
+.fixed-table__list {
+  position: relative;
+  height: 100%;
+}
+
+.fixed-table__list--fixed {
+  height: auto;
+  overflow: visible;
+}
+
+.fixed-table__header {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  height: 72px;
+  overflow: hidden;
+  border-bottom: 1px solid gray;
+  z-index: 10000;
+  background-color: white;
+}
+
+.fixed-table__scrollable-header{
+  position: absolute;
+  top: 20px;
+  left: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+}
+
+.fixed-table__filterable-header{
+  position: absolute;
+  top: 45px;
+  left: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+}
+
+.fixed-table__th  { /* sort headers */
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  width: 100px;
+  padding: 0 5px;
+  cursor: pointer;
+}
+
+.fixed-table__fh{ /* filter input */
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  width: 95px;
+  padding: 0;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.btn{
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background-color: rgba(128, 128, 128, 0.2);
+}
+
+.fixed-table__row {
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+}
+
+.fixed-table__col {
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  width: 100px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  border-bottom: 1px solid gray;
+  padding: 5px;
+}
+
