@@ -56,7 +56,8 @@ var FixedTable = function (_React$Component) {
   };
 
   FixedTable.prototype.sortAsc = function sortAsc(prop) {
-    return this.state.data.sort(function (a, b) {
+    var data  = (this.state.data.length > this.state.filteredData.length) ? this.state.filteredData :  this.state.data;
+    return data.sort(function (a, b) {
       if (a[prop] > b[prop]) {
         return 1;
       }
@@ -70,7 +71,8 @@ var FixedTable = function (_React$Component) {
   };
 
   FixedTable.prototype.sortDesc = function sortDesc(prop) {
-    return this.state.data.sort(function (a, b) {
+    var data  = (this.state.data.length > this.state.filteredData.length) ? this.state.filteredData :  this.state.data;
+    return data.sort(function (a, b) {
       if (a[prop] < b[prop]) {
         return 1;
       }
@@ -112,11 +114,9 @@ var FixedTable = function (_React$Component) {
   // Method to Filter table row by column id
   FixedTable.prototype.filterBy = function filterBy(event) {
     event.preventDefault();
-    var key=event.keyCode||event.charCode,
-        deletekey = (key==8 || key==46) ? true : false,
-        value = event.target.value;
+    var value = event.target.value,
         term = new RegExp(value, 'i'),
-        filterId = event.target.id,
+        filterId = event.target.name,
         filteredData =  [],
         list = Immutable.fromJS(this.state.filteredData.length ? this.state.filteredData : this.state.data),
         $filterInput = $(".fixed-table__filterable-header input[type=text]"),
@@ -125,15 +125,16 @@ var FixedTable = function (_React$Component) {
     // onchange has empty field
     if(value === ''){
       $filterInput.each(function (index) {
-        var val = $(this).val();
+        var val = $(this).val(),
+            id = this.name;
         if (val === '') {
-          console.warn('ignore filter:', this.id);
+          console.warn('ignore filter:', this.name);
           if (index == $filterInput - 1) renderTable();
         } else {
           //other column have filter values
-          console.warn('use filter: ', this.id, val, key, deletekey);
+          console.warn('use filter: ', id, val, deletekey);
           filteredData = list.filter(function (item) {
-            var filteredById = item.get(this.id);
+            var filteredById = item.get(id);
             if (filteredById.toString().search(val) > -1) {
               return filteredById;
             }
@@ -149,7 +150,7 @@ var FixedTable = function (_React$Component) {
         }
       });
     }
-    console.log('filteredData/key/deletekey:', filteredData, key, deletekey);
+
     this.setState({
       sortingProp: this.sortingProp,
       sortingDirectionAsc: this.sortingDirectionAsc,
@@ -168,9 +169,7 @@ var FixedTable = function (_React$Component) {
 
 
   FixedTable.prototype.renderList = function renderList() {
-    //console.warn('renderList > isMap isArray:', Immutable.Map.isMap(this.state.items), this.state.items instanceof Array);
     var data  = (this.state.data.length > this.state.filteredData.length) ? this.state.filteredData :  this.state.data;
-    console.log('data/filtered:', this.state.data.length, this.state.filteredData.length)
     var rowheaders = data.map(function(i, index) {
       return React.createElement('div', {
             key: index,
@@ -211,7 +210,7 @@ var FixedTable = function (_React$Component) {
           onClick: this.sortBy.bind(this, 'id')
         }, 'Id'), React.createElement('div', {
           className: 'fixed-table__th',
-          onClick: this.sortBy.bind(this, 'first_na me')
+          onClick: this.sortBy.bind(this, 'first_name')
         }, 'First Name'), React.createElement('div', {
           className: 'fixed-table__th',
           onClick: this.sortBy.bind(this, 'last_name')
@@ -232,37 +231,37 @@ var FixedTable = function (_React$Component) {
           type: 'text',
           className: 'fixed-table__fh',
           placeholder: 'Id',
-          id: 'id',
+          name: 'id',
           onChange: this.filterBy.bind(this)
         }), React.createElement('input', {
           type: 'text',
           className: 'fixed-table__fh',
           placeholder: 'First Name',
-          id: 'first_name',
+          name: 'first_name',
           onChange: this.filterBy.bind(this)
         }), React.createElement('input', {
           type: 'text',
           className: 'fixed-table__th',
           placeholder: 'Last Name',
-          id: 'last_name',
+          name: 'last_name',
           onChange: this.filterBy.bind(this)
         }), React.createElement('input', {
           type: 'text',
           className: 'fixed-table__fh',
           placeholder: 'Email',
-          id: 'email',
+          name: 'email',
           onChange: this.filterBy.bind(this)
         }), React.createElement('input', {
           type: 'text',
           className: 'fixed-table__fh',
           placeholder: 'Country',
-          id: 'country',
+          name: 'country',
           onChange: this.filterBy.bind(this)
         }), React.createElement('input', {
           type: 'text',
           className: 'fixed-table__fh',
           placeholder: 'IP Address',
-          id: 'ip_address',
+          name: 'ip_address',
           onChange: this.filterBy.bind(this)
         }),
         React.createElement('input', {

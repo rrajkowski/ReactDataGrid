@@ -6,7 +6,7 @@
 - sortable columns
 - multiple column filter
 - large datasets
-- modular 
+- modular
 
 ## Coming Soon:
 - scrolling table
