@@ -38,7 +38,7 @@
 }
 
 .fixed-table__body .fixed-table__list {
-  top: 65px;
+  top: 55px;
 }
 
 .fixed-table__list {
@@ -54,7 +54,7 @@
 .fixed-table__header {
   position: fixed;
   top: 0px;
-  width: 100%;
+  width: 760px;
   height: 72px;
   overflow: hidden;
   border-bottom: 1px solid gray;
@@ -62,7 +62,7 @@
   background-color: white;
 }
 
-.fixed-table__scrollable-header{
+.fixed-table__title-header{
   position: absolute;
   top: 20px;
   left: 0;
