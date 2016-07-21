@@ -1,21 +1,6 @@
 /* ReactJS Table JSX Transpiler (Bable)  */
 'use strict';
 
-
-// Clear filters
-function clearFilter(event){
-  event.preventDefault();
-  console.log('[MPS Tables] Clear Table Filter',this.state.filteredData);
-  $(".fixed-table__filterable-header input[type=text]").val('');
-  this.setState({
-    data: this.props.data,
-    filteredData: this.props.data,
-    sortingProp: 'id',
-    sortingDirectionAsc: true
-  });
-}
-
-
 var TableView = React.createClass({
   getInitialeState: function() {
     this.state = {
@@ -33,11 +18,11 @@ var TableView = React.createClass({
       sortingDirectionAsc: true
     });
   },
-  componentWillReceiveProps: function(nextProps) {
+ /* componentWillReceiveProps: function(nextProps) {
     this.setState({
       data: this.nextProps.data
     });
-  },
+  },*/
   statics: {
     // Custom event handlers
     sortBy: function (prop) {
@@ -101,13 +86,17 @@ var TableView = React.createClass({
           value = event.target.value,
           filteredData = [],
           filterMap = {},
-          list = Immutable.fromJS($r.state.data.length > $r.state.filteredData.length ? $r.state.filteredData :  $r.state.data),
+          list = Immutable.fromJS($r.state.data.length > $r.state.filteredData.length ? $r.state.filteredData : $r.state.data),
           $filterInput = $(".fixed-table__filterable-header input[type=text]");
-      console.warn('filterBy: ',value, value.length);
+      console.warn('filterBy: ', value);
       // rest map if filter is removed
-      if(value === ''){
+      if (value === '') {
         filterMap = {};
-        list = Immutable.fromJS($r.state.data);
+        $r.setState({
+          sortingProp: $r.sortingProp,
+          sortingDirectionAsc: $r.sortingDirectionAsc,
+          filteredData: $r.state.data
+        });
       }
 
       // onchange on every field
@@ -117,10 +106,10 @@ var TableView = React.createClass({
         if (val !== '' && id.length) {
           filterMap[id] = new RegExp(val, 'i');
 
-          for(var f in filterMap) {
-            filteredData = Immutable.fromJS($r.state.filteredData).filter(function (item) {
+          for (var f in filterMap) {
+            filteredData = list.filter(function (item) {
               var filterItem = item.get(f);
-              if(!filterItem) console.warn('[MPS Tables] malformed or missing filter id: ',id);
+              if (!filterItem) console.warn('[MPS Tables] malformed or missing filter id: ', id);
               if (filterItem && filterItem.toString().search(filterMap[f]) > -1) {
                 return filterItem;
               }
@@ -130,22 +119,40 @@ var TableView = React.createClass({
       });
 
       // update filtered state
+
+      if (filteredData.size){
+        setTimeout(function () {
+          console.warn('filtered count: ', Immutable.List(filteredData.toJS()).size);
+          $r.setState({
+            sortingProp: $r.sortingProp,
+            sortingDirectionAsc: $r.sortingDirectionAsc,
+            filteredData: $.map(filteredData.toJS(), function (val, i) {
+              return [val];
+            })
+          });
+        }, 100)
+      }
+    },
+    clearFilter: function(){
+      console.log('[MPS Tables] Clear Table Filter');
+      $(".fixed-table__filterable-header input[type=text]").val('');
       $r.setState({
-        sortingProp: $r.sortingProp,
-        sortingDirectionAsc: $r.sortingDirectionAsc,
-        filteredData: $.map(filteredData.toJS(), function(val, i) { return [val]; })
+        data: $r.props.data,
+        filteredData: $r.props.data,
+        sortingProp: 'id',
+        sortingDirectionAsc: true
       });
     }
-  },
+  }, //end statics
   render: function() {
-    //var data  = (this.state.data.length > this.state.filteredData.length) ? this.state.filteredData :  this.state.data;
-    console.log('data:',this.state.data.length);
+    var data  = (this.state.data.length > this.state.filteredData.length) ? this.state.filteredData :  this.state.data;
+    console.log('data:',data.length);
     return(
         <div className="fixed-table" >
         <div className="fixed-table__body" >
         <FixedTableHeader />
         <div className="fixed-table__list" >
-        {this.state.data.map(function(item, i) {
+        {data.map(function(item, i) {
           return(
            <div key={i} className="fixed-table__row" >
            <div className="fixed-table__col" >{ item.id }</div>
@@ -182,6 +189,7 @@ var FixedTableHeader = React.createClass({
               <input className="fixed-table__fh" onChange={TableView.filterBy.bind(this)} placeholder="Email" type="text" id="email"/>
               <input className="fixed-table__fh" onChange={TableView.filterBy.bind(this)} placeholder="Country" type="text" id="country"/>
               <input className="fixed-table__fh" onChange={TableView.filterBy.bind(this)} placeholder="Ip address" type="text" id="ip_address"/>
+              <input className="fixed-table__fh btn" onClick={TableView.clearFilter.bind(this)} type="button" id="clear" value="Clear"/>
             </div>
         </div>
     )
