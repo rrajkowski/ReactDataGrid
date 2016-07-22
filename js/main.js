@@ -200,7 +200,7 @@ var FixedTable = function (_React$Component) {
         className: 'fixed-table__header'
       }, React.createElement('div', {
         ref: 'bodyListHeader',
-        className: 'fixed-table__scrollable-header'
+        className: 'fixed-table__title-header'
         }, React.createElement('div', {
           className: 'fixed-table__th',
           onClick: this.sortBy.bind(this, 'id')

@@ -86,51 +86,52 @@ var TableView = React.createClass({
           value = event.target.value,
           filteredData = [],
           filterMap = {},
-          list = Immutable.fromJS($r.state.data.length > $r.state.filteredData.length ? $r.state.filteredData : $r.state.data),
+          list = Immutable.fromJS($r.state.data),
           $filterInput = $(".fixed-table__filterable-header input[type=text]");
       console.warn('filterBy: ', value);
       // rest map if filter is removed
+      // TODO: replace $r with the TableView 'state'
       if (value === '') {
         filterMap = {};
-        $r.setState({
+       /* $r.setState({
           sortingProp: $r.sortingProp,
           sortingDirectionAsc: $r.sortingDirectionAsc,
           filteredData: $r.state.data
-        });
+        });*/
       }
 
       // onchange on every field
+      var filterItem = '';
       $filterInput.each(function (index) {
         var val = $(this).val(),
             id = this.id;
         if (val !== '' && id.length) {
           filterMap[id] = new RegExp(val, 'i');
-
+          console.warn('filterMap: ',filterMap);
           for (var f in filterMap) {
             filteredData = list.filter(function (item) {
-              var filterItem = item.get(f);
+              filterItem = item.get(f);
               if (!filterItem) console.warn('[MPS Tables] malformed or missing filter id: ', id);
               if (filterItem && filterItem.toString().search(filterMap[f]) > -1) {
+                console.log('filterItem:',filterItem);
                 return filterItem;
               }
             });
           }
         }
+        return filteredData;
       });
 
       // update filtered state
-
       if (filteredData.size){
         setTimeout(function () {
           console.warn('filtered count: ', Immutable.List(filteredData.toJS()).size);
           $r.setState({
             sortingProp: $r.sortingProp,
             sortingDirectionAsc: $r.sortingDirectionAsc,
-            filteredData: $.map(filteredData.toJS(), function (val, i) {
-              return [val];
-            })
+            filteredData: $.map(filteredData.toJS(), function (val, i) { return [val]; })
           });
-        }, 100)
+        }, 50)
       }
     },
     clearFilter: function(){
