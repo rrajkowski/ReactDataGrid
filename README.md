@@ -1,4 +1,5 @@
 # ReactDataGrid
+## [Working Demo](http://rubenrajkowski.com/ReactDataGrid/)
 
 ## Simple Regex Filter and Sort with React.js and Immutable-js
 ## Existing Features:
